@@ -8,16 +8,33 @@ app.use(cors());
 
 app.get("/scrape", async (req, res) => {
     try {
-        const respuesta = await axios.get("https://federaciondecafeteros.org/wp/"); // Ajusta la URL real
-        const dom = new JSDOM(respuesta.data);
-        const elementos = dom.window.document.querySelector("tasa-de-cambio:"); // Ajusta el selector
+        // 🔹 Reemplaza con la URL de la página de donde extraerás el dato
+        const url = "https://www.google.com/finance/quote/USD-COP?sa=X&ved=2ahUKEwiziZPX15GMAxWwSjABHSMLF9MQmY0JegQIIBAu";
 
-        res.json({ texto: elementos ? elementos.textContent : "No se encontró la información" });
+        // 1️⃣ Hacer la petición a la página
+        const respuesta = await axios.get(url, {
+            headers: { "User-Agent": "Mozilla/5.0" } // Evita bloqueos
+        });
+
+        // 2️⃣ Cargar la respuesta en JSDOM
+        const dom = new JSDOM(respuesta.data);
+
+        // 3️⃣ Buscar el elemento con la clase ".YMlKec.fxKbKc"
+        const elemento = dom.window.document.querySelector(".YMlKec.fxKbKc");
+
+        // 4️⃣ Extraer el texto del elemento
+        const datoExtraido = elemento ? elemento.textContent : "No encontrado";
+
+        // 5️⃣ Retornar el dato en JSON
+        res.json({ dato: datoExtraido });
+
     } catch (error) {
+        console.error("Error al obtener datos:", error);
         res.status(500).json({ error: "Error al obtener datos" });
     }
 });
 
-// Configurar puerto dinámico para Vercel
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+// 🔹 Puerto donde correrá el servidor
+app.listen(3000, () => {
+    console.log("Servidor corriendo en http://localhost:3000");
+});
