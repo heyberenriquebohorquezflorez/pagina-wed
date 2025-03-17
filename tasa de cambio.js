@@ -8,9 +8,9 @@ app.use(cors());
 
 app.get("/scrape", async (req, res) => {
     try {
-        const response = await axios.get("https://ejemplo.com"); // Reemplaza con la URL real
+        const response = await axios.get("https://federaciondecafeteros.org/wp/"); // Reemplaza con la URL real
         const dom = new JSDOM(response.data);
-        const elemento = dom.window.document.querySelector(".mi-clase"); // Cambia ".mi-clase"
+        const elemento = dom.window.document.querySelector("tasa de cambio:"); // Cambia "tasa de cambio"
         res.json({ text: elemento ? elemento.textContent : "No encontrado" });
     } catch (error) {
         res.status(500).json({ error: "Error al obtener datos" });
